@@ -1,5 +1,7 @@
+package birchmd.scalagebra
+
 import org.scalatest.{FlatSpec, Matchers}
-import birchmd.scalgebra.Matrix
+//import birchmd.scalgebra.Matrix
 
 class MatrixTest extends FlatSpec with Matchers {
   "A matrix" should "add element-wise" in {
