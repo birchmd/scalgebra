@@ -1,29 +1,28 @@
 package birchmd.scalgebra
 
+import org.scalacheck.Gen
+import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import org.scalatest.{FlatSpec, Matchers}
-import scala.util.Random
 
-//This unit test uses the additive integers monoid, but
-//of course it should would for any valid monoid.
-class MonoidTest extends FlatSpec with Matchers {
-  "A monoid" should "have an associative operation" in  {
-    val monoid: Monoid[Int] = Monoid.AdditiveIntegers
-    import monoid.InfixOp
+class MonoidTest[T](val monoid: Monoid[T], val gen: Gen[T], val theStructure: String = "A monoid")
+  extends FlatSpec with GeneratorDrivenPropertyChecks with Matchers {
 
-    val a: Int = 1
-    val b: Int = 2
-    val c: Int = 3
+  import monoid.InfixOp
 
-    ((a op b) op c) should be (a op (b op c))
+  theStructure should "have an associative operation" in  {
+    val genTriples = for { x <- gen; y <- gen; z <- gen } yield (x, y, z)
+
+    forAll(genTriples){
+      case (x, y, z) => ((x op y) op z) should be (x op (y op z))
+    }
+
   }
 
   it should "have an identity element" in {
-    val monoid: Monoid[Int] = Monoid.AdditiveIntegers
-    import monoid.InfixOp
+    val y: T = monoid.identity
 
-    val a: Int = Random.nextInt()
-    val b: Int = monoid.identity
-
-    (a op b) should be (a)
+    forAll(gen){
+      (x: T) => (x op y) should be (x)
+    }
   }
 }

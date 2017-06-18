@@ -1,14 +1,16 @@
 package birchmd.scalgebra
 
-import org.scalatest.{FlatSpec, Matchers}
-import scala.util.Random
+import org.scalacheck.Gen
 
-class GroupTest extends FlatSpec with Matchers {
-  "A group" should "have an inverse for every element" in {
-    val group = Group.AdditiveIntegers
-    import group.InfixOp
+class GroupTest[T](val group: Group[T],
+                   override val gen: Gen[T],
+                   override val theStructure: String = "A group")
+  extends MonoidTest[T](group, gen, theStructure) {
 
-    val a: Int = Random.nextInt()
-    (a op group.inverse(a)) should be (group.identity)
+  import group.InfixOp
+  theStructure should "have an inverse for every element" in {
+    forAll(gen){
+      (x: T) => (x op group.inverse(x)) should be (group.identity)
+    }
   }
 }
