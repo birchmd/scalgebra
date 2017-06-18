@@ -7,8 +7,9 @@ import scala.util.Random
 //of course it should would for any valid monoid.
 class MonoidTest extends FlatSpec with Matchers {
   "A monoid" should "have an associative operation" in  {
-    import Monoid.implicits._
-    implicit val monoid: Monoid[Int] = Monoid.AdditiveIntegers
+    val monoid: Monoid[Int] = Monoid.AdditiveIntegers
+    import monoid.InfixOp
+
     val a: Int = 1
     val b: Int = 2
     val c: Int = 3
@@ -17,8 +18,9 @@ class MonoidTest extends FlatSpec with Matchers {
   }
 
   it should "have an identity element" in {
-    import Monoid.implicits._
-    implicit val monoid: Monoid[Int] = Monoid.AdditiveIntegers
+    val monoid: Monoid[Int] = Monoid.AdditiveIntegers
+    import monoid.InfixOp
+
     val a: Int = Random.nextInt()
     val b: Int = monoid.identity
 
