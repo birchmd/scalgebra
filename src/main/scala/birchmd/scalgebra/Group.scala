@@ -1,6 +1,6 @@
 package birchmd.scalgebra
 
-trait Group[T] extends Monoid[T] {
+abstract class Group[T] extends Monoid[T] {
   /**
     * Returns the invers of `a` with respect to the
     * operation of the group. I.e. `op(a, inverse(a)) = identity`

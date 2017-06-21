@@ -1,8 +1,5 @@
 package birchmd.scalgebra.util
 
-/**
-  * Created by mbirch on 20/06/2017.
-  */
 object EuclidianAlgorithm {
   val bigIntZero: BigInt = BigInt(0)
 

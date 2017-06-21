@@ -2,7 +2,7 @@ package birchmd.scalgebra
 
 import birchmd.scalgebra.numbers.Rational
 
-trait Field[T] extends Ring[T] {
+abstract class Field[T] extends Ring[T] {
   def multInv(a: T): T // multiplicative inverse
 
   def multiplicativeAbelianGroup: AbelianGroup[T] = new AbelianGroup[T] {

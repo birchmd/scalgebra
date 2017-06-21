@@ -4,4 +4,4 @@ package birchmd.scalgebra
 //group from a coding perspective, but
 //requires additional test in testing suite
 //to ensure the operation is commutative
-trait AbelianGroup[T] extends Group[T]
+abstract class AbelianGroup[T] extends Group[T]

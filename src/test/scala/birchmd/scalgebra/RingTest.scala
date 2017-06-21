@@ -1,15 +1,24 @@
 package birchmd.scalgebra
 
 import org.scalacheck.Gen
+import org.scalatest.prop.GeneratorDrivenPropertyChecks
+import org.scalatest.{FlatSpec, Matchers}
 
 class RingTest[T] (val ring: Ring[T],
-                   override val gen: Gen[T],
-                   override val theStructure: String = "A ring")
-  extends AbelianGroupTest(ring, gen, theStructure){
+                   val gen: Gen[T],
+                   val theStructure: String = "A ring")
+  extends FlatSpec with GeneratorDrivenPropertyChecks with Matchers {
 
   import ring.InfixOps
 
-  theStructure should "be a monoid under multiplication" in {
+  theStructure should "be an abelian group under addition" in {
+    val groupTest = new AbelianGroupTest[T](ring.additiveAbelianGroup, gen, "An abelian group under addition")
+
+    groupTest.execute()
+  }
+
+
+  it should "be a monoid under multiplication" in {
     val monoidTest = new MonoidTest[T](ring.multiplicativeMonoid, gen, "A monoid under multiplication")
 
     monoidTest.execute()

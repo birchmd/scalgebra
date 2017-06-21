@@ -11,7 +11,7 @@ class FieldTest[T] (val field: Field[T],
     //exclude zero from abelian group test since zero does not have a
     //multiplicative inverse
     val multGroupTest = new AbelianGroupTest[T](field.multiplicativeAbelianGroup,
-      gen.retryUntil(_ != field.zero), "An abelian group under multiplication")
+      gen.filter(_ != field.zero), "An abelian group under multiplication")
 
     multGroupTest.execute()
   }

@@ -2,7 +2,7 @@ package birchmd.scalgebra
 
 import birchmd.scalgebra.util.RussianPeasant
 
-trait Monoid[T] { self =>
+abstract class Monoid[T] { self =>
   def op (a: T, b: T): T //must be associative
   val identity: T //must have the property (x: T) => op(x, unit) == x
 

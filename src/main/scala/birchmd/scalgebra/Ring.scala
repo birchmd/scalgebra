@@ -1,6 +1,6 @@
 package birchmd.scalgebra
 
-trait Ring[T] extends AbelianGroup[T] {
+abstract class Ring[T] {
   def plus(a: T, b: T): T
   def times(a: T, b: T): T
   def addInv(a: T): T //additive inverse of a
@@ -14,10 +14,11 @@ trait Ring[T] extends AbelianGroup[T] {
   }
 
   //Rings have an embedded additive group
-  override def op(a: T, b: T): T = plus(a, b)
-  override def inverse(a: T): T = addInv(a)
-  override val identity: T = zero
-  def additiveAbelianGroup: AbelianGroup[T] = this
+  def additiveAbelianGroup: AbelianGroup[T] =  new AbelianGroup[T] {
+    override def op(a: T, b: T): T = plus(a, b)
+    override def inverse(a: T): T = addInv(a)
+    override val identity: T = zero
+  }
 
   //Rings havce an embedded multiplicative monoid
   def multiplicativeMonoid: Monoid[T] = new Monoid[T] {

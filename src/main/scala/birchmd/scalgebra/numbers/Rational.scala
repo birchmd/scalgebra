@@ -6,7 +6,7 @@ import scala.math.abs
 //class has private constructor to force user to
 //use the factory apply method which ensures the
 //fraction is in reduced form with positive denominator
-class Rational private (val num: Int, val denom: Int) {
+class Rational private (val num: Long, val denom: Long) {
   require(denom != 0, "Cannot have zero denominator!")
 
   def +(other: Rational): Rational = other match {
@@ -33,16 +33,16 @@ class Rational private (val num: Int, val denom: Int) {
 }
 
 object Rational {
-  def apply(a: Int, b: Int): Rational = {
+  def apply(a: Long, b: Long): Rational = {
     if (b < 0) {
-      apply(-a, b)
+      apply(-a, -b)
     } else {
       val d = gcd(abs(a), b)
       new Rational(a / d, b / d)
     }
   }
 
-  def apply(a: Int): Rational = new Rational(a, 1)
+  def apply(a: Long): Rational = new Rational(a, 1)
 
-  def unapply(arg: Rational): Option[(Int, Int)] = Some((arg.num, arg.denom))
+  def unapply(arg: Rational): Option[(Long, Long)] = Some((arg.num, arg.denom))
 }
