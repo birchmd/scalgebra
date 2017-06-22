@@ -9,7 +9,7 @@ class RingTest[T] (val ring: Ring[T],
                    val theStructure: String = "A ring")
   extends FlatSpec with GeneratorDrivenPropertyChecks with Matchers {
 
-  import ring.InfixOps
+  import ring.ArithmeticOps
 
   theStructure should "be an abelian group under addition" in {
     val groupTest = new AbelianGroupTest[T](ring.additiveAbelianGroup, gen, "An abelian group under addition")

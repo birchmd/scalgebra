@@ -1,5 +1,7 @@
 package birchmd.scalgebra
 
+import birchmd.scalgebra.util.RussianPeasant
+
 abstract class Ring[T] {
   def plus(a: T, b: T): T
   def times(a: T, b: T): T
@@ -7,10 +9,15 @@ abstract class Ring[T] {
   val zero: T //i.e. additive unit
   val one: T //i.e. multiplicative unit
 
+  def pow(a: T, n: BigInt):T = RussianPeasant.rep[T](a, n, times, one)
+
   //infix notation for the operations
-  implicit class InfixOps(a: T) {
+  implicit class ArithmeticOps(a: T) {
     def + (b: T): T = plus(a, b)
     def * (b: T): T = times(a, b)
+    def - (b: T): T = plus(a, addInv(b))
+    def ^ (n: BigInt): T = pow(a, n)
+    def unary_- : T = addInv(a)
   }
 
   //Rings have an embedded additive group
@@ -20,7 +27,7 @@ abstract class Ring[T] {
     override val identity: T = zero
   }
 
-  //Rings havce an embedded multiplicative monoid
+  //Rings have an embedded multiplicative monoid
   def multiplicativeMonoid: Monoid[T] = new Monoid[T] {
     override def op(a: T, b: T): T = times(a, b)
     override val identity: T = one
