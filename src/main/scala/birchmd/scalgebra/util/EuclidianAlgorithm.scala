@@ -28,4 +28,9 @@ object EuclidianAlgorithm {
       extended( curr, (r2, s2, t2) )
     }
   }
+
+  def solveLinearDiophantine(a: Int, b: Int, c: Int): (Int, Int) = {
+    val (g, s, t) = extended( (a, 1, 0), (b, 0, 1) )
+    (s * (c / g), t * (c / g))
+  }
 }
