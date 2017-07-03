@@ -1,5 +1,6 @@
-package birchmd.scalgebra
+package birchmd.scalgebra.linalg
 
+import birchmd.scalgebra.Ring
 import org.scalatest.{FlatSpec, Matchers}
 
 class MatrixTest extends FlatSpec with Matchers {

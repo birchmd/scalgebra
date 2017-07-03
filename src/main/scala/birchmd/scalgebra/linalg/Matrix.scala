@@ -1,4 +1,6 @@
-package birchmd.scalgebra
+package birchmd.scalgebra.linalg
+
+import birchmd.scalgebra.Ring
 
 //data is a row-first 1d storage of the 2d array
 //i.e. A[i, j] = data(ncols * i + j)
