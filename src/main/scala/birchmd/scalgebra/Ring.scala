@@ -56,4 +56,12 @@ object Ring {
     override val zero: Int = 0
     override val one: Int = 1
   }
+  //ring based on modular arithmetic
+  case class IntModM(m: Long) extends Ring[Long] {
+    override def plus(a: Long, b: Long): Long = (a + b) % m
+    override def times(a: Long, b: Long): Long  = (a * b) % m
+    override def addInv(a: Long): Long = ((-a) % m + m) % m
+    override val zero: Long = 0L
+    override val one: Long = 1L
+  }
 }
