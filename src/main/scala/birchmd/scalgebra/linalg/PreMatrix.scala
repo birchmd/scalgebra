@@ -7,7 +7,7 @@ import birchmd.scalgebra.Ring
 
 //data is a row-first 1d storage of the 2d array
 //i.e. A[i, j] = data(ncols * i + j)
-class PreMatrix[T](nrows: Int, ncols: Int, data: IndexedSeq[T])(implicit ring: Ring[T]) {
+class PreMatrix[T](val nrows: Int, val ncols: Int, val data: IndexedSeq[T])(implicit ring: Ring[T]) {
 
   def apply(i: Int, j: Int): T = data(ncols * i + j)
 
@@ -40,6 +40,24 @@ class PreMatrix[T](nrows: Int, ncols: Int, data: IndexedSeq[T])(implicit ring: R
 
   def transpose: PreMatrix[T] = {
     PreMatrix(ncols, nrows, cols.reduce(_ ++ _).toIndexedSeq)
+  }
+
+  /**
+    * Computes the minor of the matrix. I.e. the matrix
+    * resulting from deleting row i and column j.
+    * @param i row to delete
+    * @param j column to delete
+    * @return minor M_ij
+    */
+  def minor(i: Int, j: Int): PreMatrix[T] = {
+    val newData: Iterator[T] = rows
+      .zipWithIndex
+      .filter(_._2 != i)
+      .flatMap{ case (row, _) =>
+        row.zipWithIndex.filter(_._2 != j).map(_._1)
+      }
+
+    PreMatrix(nrows - 1, ncols - 1, newData.toVector)
   }
 
   override def toString: String = {
