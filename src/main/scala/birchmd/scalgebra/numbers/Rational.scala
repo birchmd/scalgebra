@@ -24,7 +24,7 @@ class Rational private (val num: Long, val denom: Long) {
   def reciprocal: Rational = new Rational(denom, num)
   def negate: Rational = new Rational(-num, denom)
 
-  override def toString: String = s"Rational($num, $denom)"
+  override def toString: String = if (denom == 1) num.toString else s"$num/$denom"
 
   override def equals(obj: scala.Any): Boolean = obj match {
     case Rational(num2, denom2) => num * denom2 == num2 * denom
