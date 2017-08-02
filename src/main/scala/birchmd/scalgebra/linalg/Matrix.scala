@@ -9,11 +9,6 @@ class Matrix[T](override val nrows: Int,
                           override val data: IndexedSeq[T])(implicit field: Field[T])
   extends PreMatrix[T](nrows, ncols, data)(field){
 
-  def colBind(other: Matrix[T]): Matrix[T] = {
-    val totalCols = ncols + other.ncols
-    Matrix.fromCols(nrows, totalCols, cols ++ other.cols)
-  }
-
   /**
     * Row operation; multiplies row i by scalar k.
     * @param i index of row to multiply
@@ -97,20 +92,44 @@ class Matrix[T](override val nrows: Int,
 
     Matrix(nrows, ncols, temp.data.iterator.flatMap(_.toIterator).toIndexedSeq)
   }
+
+  //redefine basic operations to return Matrix instead of PreMatrix
+  override def transpose: Matrix[T] = Matrix.fromPreMatrix(super.transpose)
+
+  override def minor(i: Int, j: Int): Matrix[T] = Matrix.fromPreMatrix(super.minor(i, j))
+
+  override def *(k: T): Matrix[T] = Matrix.fromPreMatrix(super.*(k))
+
+  def *(other: Matrix[T]): Matrix[T] = {
+    Matrix.fromPreMatrix(super.*(other))
+  }
+
+  def +(other: Matrix[T]): Matrix[T] = {
+    Matrix.fromPreMatrix(super.+(other))
+  }
+
+  def -(other: Matrix[T]): Matrix[T] = {
+    Matrix.fromPreMatrix(super.-(other))
+  }
+
+  def colBind(other: Matrix[T]): Matrix[T] = {
+    Matrix.fromPreMatrix(super.colBind(other))
+  }
 }
 
 object Matrix {
   def apply[T](nrows: Int, ncols: Int, data: IndexedSeq[T])(implicit field: Field[T]): Matrix[T] =
     new Matrix(nrows, ncols, data)
 
+  def fromPreMatrix[T](a: PreMatrix[T])(implicit field: Field[T]): Matrix[T] = {
+    Matrix(a.nrows, a.ncols, a.data)
+  }
+
   def fromCols[T](nrows: Int,
                   ncols: Int,
                   data: Iterator[Iterator[T]])(implicit field: Field[T]): Matrix[T] = {
-    val cols = data.map(_.toIndexedSeq).toIndexedSeq
-    val rowData = Iterator.range(0, nrows).flatMap(i => {
-      Iterator.range(0, ncols).map(j => cols(j)(i))
-    })
-    Matrix(nrows, ncols, rowData.toIndexedSeq)
+
+    fromPreMatrix[T](PreMatrix.fromCols[T](nrows, ncols, data)(field))
   }
 
   protected class Mutable[T](val ncols: Int, val data: mutable.IndexedSeq[mutable.IndexedSeq[T]])(implicit field: Field[T]) {

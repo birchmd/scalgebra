@@ -63,6 +63,11 @@ class PreMatrix[T](val nrows: Int, val ncols: Int, val data: IndexedSeq[T])(impl
     PreMatrix(nrows - 1, ncols - 1, newData.toVector)
   }
 
+  def colBind(other: PreMatrix[T]): PreMatrix[T] = {
+    val totalCols = ncols + other.ncols
+    PreMatrix.fromCols(nrows, totalCols, cols ++ other.cols)
+  }
+
   override def toString: String = {
     rows.map(rowi => rowi.mkString(" ")).mkString("\n")
   }
@@ -75,4 +80,13 @@ object PreMatrix {
     new PreMatrix(nrows, ncols, data)
 
 
+  def fromCols[T](nrows: Int,
+                  ncols: Int,
+                  data: Iterator[Iterator[T]])(implicit ring: Ring[T]): PreMatrix[T] = {
+    val cols = data.map(_.toIndexedSeq).toIndexedSeq
+    val rowData = Iterator.range(0, nrows).flatMap(i => {
+      Iterator.range(0, ncols).map(j => cols(j)(i))
+    })
+    PreMatrix(nrows, ncols, rowData.toIndexedSeq)
+  }
 }
