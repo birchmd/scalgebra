@@ -24,6 +24,9 @@ class PreMatrix[T](val nrows: Int, val ncols: Int, val data: IndexedSeq[T])(impl
   def + (other: PreMatrix[T]): PreMatrix[T] = {
     PreMatrix(nrows, ncols, data.zip(other.data).map{ case (a, b) => ring.plus(a, b) })
   }
+  def - (other: PreMatrix[T]): PreMatrix[T] = {
+    PreMatrix(nrows, ncols, data.zip(other.data).map{ case (a, b) => ring.plus(a, ring.addInv(b)) })
+  }
   def * (k: T): PreMatrix[T] = {
     PreMatrix(nrows, ncols, data.map(a => ring.times(a, k)))
   }
