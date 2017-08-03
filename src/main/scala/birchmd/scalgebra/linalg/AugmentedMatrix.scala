@@ -2,7 +2,7 @@ package birchmd.scalgebra.linalg
 
 import birchmd.scalgebra.Field
 
-trait AugmentedMatrix[T] { self =>
+abstract class AugmentedMatrix[T] { self =>
   val numPrimaryCols: Int
   val mat: Matrix[T]
   implicit val field: Field[T]

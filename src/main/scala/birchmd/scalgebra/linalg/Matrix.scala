@@ -93,6 +93,10 @@ class Matrix[T](override val nrows: Int,
     Matrix(nrows, ncols, temp.data.iterator.flatMap(_.toIterator).toIndexedSeq)
   }
 
+  def nullSpace: AffineSpace[T] = {
+    Matrix.solveLinearSystem(this, ColumnVector.zero[T](this.nrows)).get
+  }
+
   //redefine basic operations to return Matrix instead of PreMatrix
   override def transpose: Matrix[T] = Matrix.fromPreMatrix(super.transpose)
 
@@ -130,6 +134,49 @@ object Matrix {
                   data: Iterator[Iterator[T]])(implicit field: Field[T]): Matrix[T] = {
 
     fromPreMatrix[T](PreMatrix.fromCols[T](nrows, ncols, data)(field))
+  }
+
+  def solveLinearSystem[T](a: Matrix[T],
+                           b: ColumnVector[T])
+                          (implicit field: Field[T]): Option[AffineSpace[T]] = {
+    val augmentedMatrix = AugmentedMatrix(a, b).rowReduce
+    val rref = augmentedMatrix.primary
+    val foundSolution = ColumnVector(augmentedMatrix.secondary.data.take(a.ncols))
+
+    if (augmentedMatrix.isInconsistent) {
+      None
+    } else if (augmentedMatrix.hasUniqueSolution) {
+      //no basis since solution space consists of single point (i.e. 0-dimensional)
+      Some(AffineSpace(foundSolution, List.empty[ColumnVector[T]]))
+    } else {
+
+      //map of bound variable column indices to their free variable coefficients
+      val boundExpressions: Map[Int, Map[Int, T]] = rref.rows
+        .map(_.zipWithIndex.dropWhile(_._1 == field.zero))
+        .filter(_.hasNext)
+        .map(indexedRow => {
+          val leadingCol = indexedRow.next()._2
+          val coeffs = indexedRow.map{ //basis vector coeff has opposite sign
+            case (el, ind) => ind -> field.addInv(el)
+          }.toMap
+          leadingCol -> coeffs
+        }).toMap
+
+      val basis: Iterator[ColumnVector[T]] = Iterator.range(0, a.ncols)
+        .filter(!boundExpressions.contains(_)) //filter to free variable columns
+        .map(j => {
+          val colData = Iterator.range(0, a.ncols).map(j2 => {
+            if (j == j2) field.one else {
+              boundExpressions
+                .getOrElse(j2, Map.empty[Int, T])
+                .getOrElse(j, field.zero)
+            }
+          })
+          ColumnVector(colData.toIndexedSeq)
+      })
+
+      Some(AffineSpace(foundSolution, basis.toList))
+    }
   }
 
   protected class Mutable[T](val ncols: Int, val data: mutable.IndexedSeq[mutable.IndexedSeq[T]])(implicit field: Field[T]) {

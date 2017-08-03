@@ -24,4 +24,8 @@ object ColumnVector {
   def apply[T](data: IndexedSeq[T])(implicit field: Field[T]): ColumnVector[T] = {
     new ColumnVector[T](data.length, data)
   }
+
+  def zero[T](n: Int)(implicit field: Field[T]): ColumnVector[T] = {
+    ColumnVector(IndexedSeq.fill(n)(field.zero))
+  }
 }
