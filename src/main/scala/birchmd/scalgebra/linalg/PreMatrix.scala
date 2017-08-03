@@ -9,6 +9,14 @@ import birchmd.scalgebra.Ring
 //i.e. A[i, j] = data(ncols * i + j)
 class PreMatrix[T](val nrows: Int, val ncols: Int, val data: IndexedSeq[T])(implicit ring: Ring[T]) {
 
+  override def equals(obj: scala.Any): Boolean = obj match {
+    case otherPreMatrix: PreMatrix[T] =>
+      this.nrows == otherPreMatrix.nrows &&
+        this.ncols == otherPreMatrix.ncols &&
+          this.data == otherPreMatrix.data
+    case _ => super.equals(obj)
+  }
+
   def apply(i: Int, j: Int): T = data(ncols * i + j)
 
   def row(i: Int): Iterator[T] = {

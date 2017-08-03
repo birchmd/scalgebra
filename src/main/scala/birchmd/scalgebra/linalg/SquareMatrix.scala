@@ -42,14 +42,11 @@ class SquareMatrix[T](override val nrows: Int,
   }
 
   def inverse: Option[SquareMatrix[T]] = {
-    val augmentedMatrx: Matrix[T] = this.colBind(SquareMatrix.identity(nrows))
-    val rrefCols = augmentedMatrx.reducedRowEchelonForm.cols.toSeq
-    val thisReduced = Matrix.fromCols(nrows, nrows, rrefCols.iterator.take(nrows))
-    if(thisReduced.rows.exists(_.forall(_ == field.zero))) {
-      None
+    val augMat = AugmentedMatrix(this, SquareMatrix.identity(nrows)).rowReduce
+    if(augMat.hasUniqueSolution) {
+      Some(SquareMatrix(nrows, augMat.secondary.data))
     } else {
-      val result = Matrix.fromCols(nrows, nrows, rrefCols.iterator.drop(nrows)).data
-      Some(SquareMatrix(nrows, result))
+      None
     }
   }
 }
