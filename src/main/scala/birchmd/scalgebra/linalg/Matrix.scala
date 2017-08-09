@@ -97,6 +97,18 @@ class Matrix[T](override val nrows: Int,
     Matrix.solveLinearSystem(this, ColumnVector.zero[T](this.nrows)).get
   }
 
+  def rowSpace: AffineSpace[T] = {
+    val rref = this.reducedRowEchelonForm
+    val basis = rref.rows
+      .map(_.toIndexedSeq)
+      .filter(_.exists(_ != field.zero)) //filter out all zero rows
+      .map(r => ColumnVector(r))
+      .toIndexedSeq
+    AffineSpace(ColumnVector.zero(this.ncols), basis)
+  }
+
+  def colSpace: AffineSpace[T] = this.transpose.rowSpace
+
   //redefine basic operations to return Matrix instead of PreMatrix
   override def transpose: Matrix[T] = Matrix.fromPreMatrix(super.transpose)
 
