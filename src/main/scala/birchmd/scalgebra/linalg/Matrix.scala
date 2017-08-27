@@ -1,6 +1,6 @@
 package birchmd.scalgebra.linalg
 
-import birchmd.scalgebra.{Field, linalg}
+import birchmd.scalgebra.Field
 
 import scala.collection.mutable
 
@@ -63,8 +63,8 @@ class Matrix[T](override val nrows: Int,
     Matrix(nrows, ncols, newData.toVector)
   }
 
-  protected def toMutable: linalg.Matrix.Mutable[T] =
-    new linalg.Matrix.Mutable[T](ncols,
+  protected def toMutable: Matrix.Mutable[T] =
+    new Matrix.Mutable[T](ncols,
       mutable.IndexedSeq(rows.map(r => mutable.IndexedSeq(r.toSeq: _*)).toSeq:_*))
 
   def reducedRowEchelonForm: Matrix[T] = {
