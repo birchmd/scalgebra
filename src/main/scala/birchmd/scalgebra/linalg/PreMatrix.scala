@@ -97,4 +97,13 @@ object PreMatrix {
     })
     PreMatrix(nrows, ncols, rowData.toIndexedSeq)
   }
+
+  def identity[T](n: Int)(implicit ring: Ring[T]): PreMatrix[T] = {
+    val data = scala.collection.mutable.IndexedSeq.fill(n * n)(ring.zero)
+    Iterator.range(0, n).foreach(i => {
+      data((n + 1) * i) = ring.one
+    })
+
+    PreMatrix(n, n, data.toIndexedSeq)
+  }
 }
